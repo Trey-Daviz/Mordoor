@@ -18,4 +18,3 @@ class Credentials:
 
     def is_elevated(self):
         return self._passwd == "ElevatedPass"
-

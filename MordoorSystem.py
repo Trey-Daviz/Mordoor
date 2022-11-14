@@ -27,7 +27,6 @@ class MordoorSystem:
         else:
             print("Removing user not allowed")
 
-
     def remove_door(self, sys_obj):
         return False
 
