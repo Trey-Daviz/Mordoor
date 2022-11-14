@@ -7,3 +7,4 @@ class AdminUser(a.Access):
 
     def remove_user(self, sys_obj):
         return True
+

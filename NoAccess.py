@@ -10,3 +10,4 @@ class NoAccess(a.Access):
         if not self.instances.keys().__contains__(user):
             self.instances[user] = NoAccess(user)
         return self.instances[user]
+

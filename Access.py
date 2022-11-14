@@ -38,3 +38,4 @@ class Access(object):
 
     def change_state(self, sys_obj, new_state):
         sys_obj.change_state(new_state)
+
