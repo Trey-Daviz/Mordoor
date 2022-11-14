@@ -5,6 +5,7 @@ class Functions():
     def remove_user(self):
         print("Removing user")
 
+
     def remove_door(self):
         pass
 
