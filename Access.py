@@ -36,6 +36,9 @@ class Access(object):
     def login(self, sys_obj):
         return False
 
+    def open_door(self, sys_obj):
+        return False
+
     def change_state(self, sys_obj, new_state):
         sys_obj.change_state(new_state)
 

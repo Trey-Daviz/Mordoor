@@ -11,3 +11,6 @@ class NoAccess(a.Access):
             self.instances[user] = NoAccess(user)
         return self.instances[user]
 
+
+    def login(self):
+        return True
