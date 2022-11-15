@@ -7,6 +7,9 @@ import uvicorn
 import http
 import json
 import socket
+from api_dec import api
+from verify import verify
+
 hostname = socket.gethostname()
 ip = socket.gethostbyname(hostname)
 
@@ -22,43 +25,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.post("/noAccess/login", status_code=http.HTTPStatus.ACCEPTED)
-async def login(request : Request) -> None:
-    info = await request.body()
-    info = info.decode("utf-8")
-    info = json.loads(info)
-    try:
-        creds = c.Credentials(info["username"], info["password"])
-    except ValueError as v:
-        return(str(v))
-    return True
+@api
+@verify
+def login(to_return, creds, info):
+    print('hit')
+    return to_return
 
 
 @app.post("/admin/create_user", status_code=http.HTTPStatus.ACCEPTED)
-async def login(request : Request) -> str:
-    info = await request.body()
-    info = info.decode("utf-8")
-    info = json.loads(info)
-    try:
-        creds = c.Credentials(info["username"], info["password"])
-    except ValueError as v:
-        return(str(v))
+@api
+@verify
+def create_user(to_return, creds, info):
     system = ms.MordoorSystem(creds)
     try:
-        return system.create_user(info["first"], info["last"], info["r"], info["uname"], info["pwd"])
+        to_return = system.create_user(info["first"], info["last"], info["r"], info["uname"], info["pwd"])
     except Exception as e:
-        return (str(e))
+        return str(e)
+    return to_return
 
 
 @app.post("/admin/add_door", status_code=http.HTTPStatus.ACCEPTED)
-async def add_door(request : Request) -> str:
-    info = await request.body()
-    info = info.decode("utf-8")
-    info = json.loads(info)
-    try:
-        creds = c.Credentials(info["username"], info["password"])
-    except ValueError as v:
-        return str(v)
+@api
+@verify
+def create_user(to_return, creds, info):
     system = ms.MordoorSystem(creds)
     try:
         return system.add_door(info["d"])
@@ -66,52 +57,104 @@ async def add_door(request : Request) -> str:
         return str(e)
 
 
+@app.post("/admin/create_dept", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def create_dept(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.create_dept(info["name"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+
+@app.delete("/admin/remove_door", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def remove_door(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.remove_door(info["id"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+
+@app.delete("/admin/remove_dept", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def remove_dept(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.remove_dept(info["id"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+
+@app.delete("/admin/remove_user", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def remove_user(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.remove_user(info["id"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+
+@app.post("/admin/add_door_to_elevated", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def add_door_to_elevated(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.add_door_to_elevated(info["did"], info["uid"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+@app.post("/admin/add_dept_to_user", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def add_dept_to_user(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.add_dept_to_user(info["did"], info["uid"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+@app.post("/admin/add_dept_to_door", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def add_dept_to_door(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.add_dept_to_door(info["dept"], info["door"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
+@app.post("/user/open_door", status_code=http.HTTPStatus.ACCEPTED)
+@api
+@verify
+def open_door(to_return, creds, info):
+    system = ms.MordoorSystem(creds)
+    try:
+        to_return = system.open_door(info["door"])
+    except Exception as e:
+        return str(e)
+    return to_return
+
 def main():
     uvicorn.run("MordoorDriver:app", host=ip)
 
+
 if __name__ == "__main__":
     main()
-
-    # try:
-    #     system.create_user('Test', 'User', 2, 'TestUser', 'TestPass')
-    # except Exception as e:
-    #     sys.exit(e)
-
-    # try:
-    #     system.create_dept('TestDept')
-    # except Exception as e:
-    #     sys.exit(e)
-    #
-    # try:
-    #     system.remove_door(6)
-    # except Exception as e:
-    #     sys.exit(e)
-    #
-    # try:
-    #     system.remove_dept(6)
-    # except Exception as e:
-    #     sys.exit(e)
-
-    # try:
-    #     system.remove_user(5)
-    # except Exception as e:
-    #     sys.exit(e)
-
-    # try:
-    #     system.add_door_to_elevated(1,2)
-    # except Exception as e:
-    #     sys.exit(e)
-    #
-    # try:
-    #     system.add_dept_to_user(1, 2)
-    # except Exception as e:
-    #     sys.exit(e)
-    #
-    # try:
-    #     system.add_dept_to_door(1, 2)
-    # except Exception as e:
-    #     sys.exit(e)
-    #
 
     # try:
     #     system.open_door(4)
