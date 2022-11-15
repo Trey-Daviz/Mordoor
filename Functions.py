@@ -5,8 +5,15 @@ class Functions():
     def __init__(self, user):
         self._user = user
 
-    def remove_user(self):
-        print("Removing user")
+    @database_connect
+    def remove_user(self, conn, uid):
+        with conn.cursor() as db:
+            try:
+                sql = "DELETE FROM staff WHERE userID = %s" % uid
+                db.execute(sql)
+                print("User Removed")
+            except Exception as e:
+                raise e
 
     @database_connect
     def remove_door(self, conn, did):
@@ -33,11 +40,12 @@ class Functions():
         with conn.cursor() as db:
             try:
                 sql = "INSERT INTO staff(firstname, lastname, role, username, password) VALUES('%s', '%s', %s, '%s', '%s')" % (
-                firstname, lastname, role, username, passwd)
+                    firstname, lastname, role, username, passwd)
                 db.execute(sql)
                 print("Created user")
             except Exception as e:
                 raise e
+
     @database_connect
     def add_door_to_elevated(self, conn, did, uid):
         with conn.cursor() as db:
@@ -53,9 +61,17 @@ class Functions():
                     raise ValueError("You can not add an individual door to a non elevated user")
             except Exception as e:
                 raise e
-
-    def view_logs(self):
-        print("Viewing Logs")
+    @database_connect
+    def view_logs(self, conn):
+        with conn.cursor() as db:
+            try:
+                sql = "SELECT * FROM logs ORDER BY time DESC LIMIT 10"
+                db.execute(sql)
+                result = db.fetchall()
+                for row in result:
+                    print(row)
+            except Exception as e:
+                raise e
 
     @database_connect
     def add_dept_to_user(self, conn, did, uid):
@@ -72,6 +88,7 @@ class Functions():
                     print("Department has been added to that user")
             except Exception as e:
                 raise e
+
     @database_connect
     def add_dept_to_door(self, conn, dept_id, door_id):
         with conn.cursor() as db:
@@ -91,6 +108,7 @@ class Functions():
                 print("Created dept")
             except Exception as e:
                 raise e
+
     @database_connect
     def remove_dept(self, conn, did):
         with conn.cursor() as db:
@@ -133,9 +151,28 @@ class Functions():
                 if open:
                     sql = "UPDATE door SET locked_state = 0 WHERE doorID = %s" % did
                     db.execute(sql)
+                    self.write_logs(user, did)
                     print("Door opened")
                 else:
                     raise ValueError("That user does not have access to that door")
+            except Exception as e:
+                raise e
+
+    @database_connect
+    def write_logs(self, conn, user, did):
+        with conn.cursor() as db:
+            try:
+                sql = "SELECT username FROM staff WHERE userID = %s" % user.uid
+                db.execute(sql)
+                username = db.fetchone()["username"]
+                sql = "SELECT doorname FROM door WHERE doorID = %s" % did
+                db.execute(sql)
+                doorname = db.fetchone()["doorname"]
+
+                sql = "INSERT INTO logs(userID, username, doorID, doorname) VALUES (%s, '%s', %s, '%s')" % (
+                user.uid, username, did, doorname)
+                db.execute(sql)
+                print("Log created")
             except Exception as e:
                 raise e
 

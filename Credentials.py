@@ -40,6 +40,7 @@ class Credentials:
                         sql = "SELECT role, userID FROM staff WHERE username = '%s'" % name
                         db.execute(sql)
                         fetch = db.fetchone()
+                        print("Logged in successfully")
                         return fetch["role"], fetch["userID"]
             except Exception as e:
                 raise
