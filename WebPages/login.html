@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+<label class="label">Username</label>
+<input type="text" id="username", class="input"><br>
+<label class="label">Password</label>
+<input type="text" id="password", class="input"><br>
+
+<script>
+    var enter = document.getElementById("password");
+    enter.addEventListener("keydown", function (e) {
+    if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+        login();
+    }
+});
+
+async function login(){
+        
+        var apiUrl = "http://192.168.86.72:8000/noAccess/login?creds="
+        info = {
+            username: username.value,
+            password: password.value
+        }
+        
+        const response = await fetch(apiUrl, {
+            method : "POST",
+            body : JSON.stringify(info)
+        });
+        var data = await(response.json());
+        if (data != true){
+            alert(data);
+        }
+        else {
+            sessionStorage.setItem("username", username.value);
+            sessionStorage.setItem("password", password.value);
+            location.href = "driver.html"
+        }
+
+    }
+</script>
+
+</body>
+</html>
