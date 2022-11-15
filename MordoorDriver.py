@@ -155,12 +155,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    # try:
-    #     system.open_door(4)
-    # except Exception as e:
-    #     sys.exit(e)
-
     # try:
     #     system.view_logs()
     # except Exception as e:
