@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+
+<label for="door_id" class="label"> Add Department to Door: </label><br>
+<label class="label">Department ID</label>
+<input type="text" id="dept_id" class="input"><br>
+<label class="label">Door ID</label>
+<input type="text" id="door_id" class="input"><br>
+
+<script>
+    u = sessionStorage.getItem("username");
+    p = sessionStorage.getItem("password");
+
+    var enter = document.getElementById("door_id");
+    enter.addEventListener("keydown", function (e) {
+        if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+            AddDeptToDoor();
+        }
+    });
+
+    async function AddDeptToDoor(){
+            var apiUrl = "http://192.168.86.72:8000/admin/add_dept_to_door"
+            info = {username: u,
+                password: p,
+                dept: dept_id.value,
+                door: door_id.value
+            }
+            const response = await fetch(apiUrl, {
+                method : "POST",
+                body : JSON.stringify(info)
+            });
+            data = await(response.json());
+            if (data != true){
+                alert(data);
+            }
+            else if (data = true) {
+                alert("Department has been added to door.")
+            }
+        }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+
+<label for="dept_id" class="label"> Remove Dept: </label><br>
+<label class="label">Department ID</label>
+<input type="text" id="dept_id" class="input"><br>
+
+<script>
+    u = sessionStorage.getItem("username");
+    p = sessionStorage.getItem("password");
+
+    var enter = document.getElementById("dept_id");
+    enter.addEventListener("keydown", function (e) {
+        if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+            RemoveDept();
+        }
+    });
+
+    async function RemoveDept(){
+            var apiUrl = "http://192.168.86.72:8000/admin/remove_dept"
+            info = {username: u,
+                password: p,
+                id: dept_id.value
+            }
+            const response = await fetch(apiUrl, {
+                method : "DELETE",
+                body : JSON.stringify(info)
+            });
+            data = await(response.json());
+            if (data != true){
+                alert(data);
+            }
+            else if (data = true) {
+                alert("Department removed sucessfully")
+            }
+        }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+
+<label for="door_id" class="label"> Remove User: </label><br>
+<label class="label">User ID</label>
+<input type="text" id="user_id" class="input"><br>
+
+<script>
+    u = sessionStorage.getItem("username");
+    p = sessionStorage.getItem("password");
+
+    var enter = document.getElementById("user_id");
+    enter.addEventListener("keydown", function (e) {
+        if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+            RemoveUser();
+        }
+    });
+
+    async function RemoveUser(){
+            var apiUrl = "http://192.168.86.72:8000/admin/remove_user"
+            info = {username: u,
+                password: p,
+                id: user_id.value
+            }
+            const response = await fetch(apiUrl, {
+                method : "DELETE",
+                body : JSON.stringify(info)
+            });
+            data = await(response.json());
+            if (data != true){
+                alert(data);
+            }
+            else if (data = true) {
+                alert("User removed sucessfully")
+            }
+        }
+
+</script>
+</body>
+</html>
