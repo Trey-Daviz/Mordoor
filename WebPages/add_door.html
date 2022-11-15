@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+
+<label for="add_user" class="label"> Add Door: </label><br>
+<label class="label">Doorname</label>
+<input type="text" id="doorname" class="input"><br>
+
+<script>
+    u = sessionStorage.getItem("username");
+    p = sessionStorage.getItem("password");
+
+    var enter = document.getElementById("doorname");
+    enter.addEventListener("keydown", function (e) {
+        if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+            AddDoor();
+        }
+    });
+
+    async function AddDoor(){
+            var apiUrl = "http://192.168.86.72:8000/admin/add_door"
+            info = {username: u,
+                password: p,
+                d: doorname.value
+            }
+            const response = await fetch(apiUrl, {
+                method : "POST",
+                body : JSON.stringify(info)
+            });
+            data = await(response.json());
+            if (data != true){
+                alert(data);
+            }
+            else if (data = true) {
+                alert("Door added sucessfully")
+            }
+        }
+
+</script>
+</body>
+</html>

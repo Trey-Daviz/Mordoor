@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link rel="stylesheet" href="stylesheet.css">
+</head>
+<body>
+
+
+<label for="add_user" class="label"> Add User: </label><br>
+<label class="label">First Name</label>
+<input type="text" id="firstname" name="first_name", class="input"><br>
+<label class="label">Last Name</label>
+<input type="text" id="lastname" name="last_name", class="input"><br>
+<label class="label">Role</label>
+<input type="text" id="role" name="ROLE", class="input"><br>
+<label class="label">Username</label>
+<input type="text" id="username" name="uName", class="input"><br>
+<label class="label">Passwd</label>
+<input type="text" id="password" name="passwd", class="input"><br>
+
+<script>
+    u = sessionStorage.getItem("username");
+    p = sessionStorage.getItem("password");
+
+    var enter = document.getElementById("password");
+    enter.addEventListener("keydown", function (e) {
+        if (e.code === "Enter") {  //checks whether the pressed key is "Enter"
+            AddUser();
+        }
+    });
+
+    async function AddUser(){
+            var apiUrl = "http://192.168.86.72:8000/admin/create_user"
+            info = {username: u,
+                password: p,
+                first: firstname.value, 
+                last: lastname.value, 
+                r: role.value, 
+                uname: username.value,
+                pwd: password.value
+            }
+            const response = await fetch(apiUrl, {
+                method : "POST",
+                body : JSON.stringify(info)
+            });
+            data = await(response.json());
+            if (data != true){
+                alert(data);
+            }
+            else if (data = true) {
+                alert("User created sucessfully")
+            }
+        }
+
+</script>
+</body>
+</html>
