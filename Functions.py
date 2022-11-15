@@ -143,8 +143,9 @@ class Functions():
                         doors = []
                         for i in result:
                             doors.append(i["doorID"])
+                        print(isinstance(did, int))
                         for i in doors:
-                            if i == did:
+                            if str(i) == did:
                                 open = True
                 elif user.role == '0':
                     open = True
