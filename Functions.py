@@ -9,9 +9,20 @@ class Functions():
     def remove_user(self, conn, uid):
         with conn.cursor() as db:
             try:
+                sql = "SELECT * FROM staff WHERE userID = %s" % uid
+                db.execute(sql)
+                exists = db.fetchall()
+                if not exists:
+                    raise ValueError("That user does not exist")
+
                 sql = "DELETE FROM staff WHERE userID = %s" % uid
                 db.execute(sql)
-                print("User Removed")
+
+                sql = "DELETE FROM elevateddoor WHERE userID = %s" % uid
+                db.execute(sql)
+
+                sql = "DELETE FROM employeedept WHERE userID = %s" % uid
+                db.execute(sql)
             except Exception as e:
                 raise e
 
@@ -19,9 +30,20 @@ class Functions():
     def remove_door(self, conn, did):
         with conn.cursor() as db:
             try:
+                sql = "SELECT * FROM door WHERE doorID = %s" % did
+                db.execute(sql)
+                exists = db.fetchall()
+                if not exists:
+                    raise ValueError("That door does not exist")
+
                 sql = "DELETE FROM door WHERE doorID = %s" % did
                 db.execute(sql)
-                print("Door removed")
+
+                sql = "DELETE FROM deptdoor WHERE doorID = %s" % did
+                db.execute(sql)
+
+                sql = "DELETE FROM elevateddoor WHERE doorID = %s" % did
+                db.execute(sql)
             except Exception as error:
                 raise
 
@@ -61,6 +83,7 @@ class Functions():
                     raise ValueError("You can not add an individual door to a non elevated user")
             except Exception as e:
                 raise e
+
     @database_connect
     def view_logs(self, conn):
         with conn.cursor() as db:
@@ -113,9 +136,20 @@ class Functions():
     def remove_dept(self, conn, did):
         with conn.cursor() as db:
             try:
+                sql = "SELECT * FROM dept WHERE deptID = %s" % did
+                db.execute(sql)
+                exists = db.fetchall()
+                if not exists:
+                    raise ValueError("That dept does not exist")
+
                 sql = "DELETE FROM dept WHERE deptID = %s" % did
                 db.execute(sql)
-                print("Removed dept")
+
+                sql = "DELETE FROM deptdoor WHERE deptID = %s" % did
+                db.execute(sql)
+
+                sql = "DELETE FROM employeedept WHERE deptID = %s" % did
+                db.execute(sql)
             except Exception as e:
                 raise e
 
@@ -171,7 +205,7 @@ class Functions():
                 doorname = db.fetchone()["doorname"]
 
                 sql = "INSERT INTO logs(userID, username, doorID, doorname) VALUES (%s, '%s', %s, '%s')" % (
-                user.uid, username, did, doorname)
+                    user.uid, username, did, doorname)
                 db.execute(sql)
                 print("Log created")
             except Exception as e:
