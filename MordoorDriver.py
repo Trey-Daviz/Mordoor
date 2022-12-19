@@ -126,7 +126,7 @@ def open_door(to_return, creds, info):
 
 
 def main():
-    uvicorn.run("MordoorDriver:app", host=ip)
+    uvicorn.run("MordoorDriver:app", host="127.0.0.1")
 
 
 if __name__ == "__main__":
